@@ -30,7 +30,7 @@ function MirrorFrame(place) {
 
 };
 
-var saveCodeOfEditor = function() {addJsToData(editor.getValue());$table.bootstrapTable('load',jsCodeArray);},
+var saveCodeOfEditor = function() {addJsToData(editor.getValue()); $table.bootstrapTable('load',jsCodeArray);var btchecked = document.getElementsByName("btSelectItem");for (i in btchecked){btchecked[i].className="mui-switch mui-switch-anim";};},
   search = function() {
     CodeMirror.commands.findPersistent(editor);
   },
