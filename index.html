@@ -1,3 +1,100 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script>window.location.href='extension.html'</script>
-</head><body></body></html>
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="./js/FileSaver.js"></script>
+<script>
+var jsToUsable = function (str) {
+        return str.replace(/("([^\\\"]*(\\.)?)*")|('([^\\\']*(\\.)?)*')|(\/{2,}.*?(\r|\n))|(\/\*(\n|.)*?\*\/)/g, function(word) {return /^\/{2,}/.test(word) || /^\/\*/.test(word) ? "" : word;}).replace(/<\/?.+?>/g,"").replace(/[\r\n]/g, ""); 
+    },
+    getStringBetweenTags = function(a, c, b) {
+        var d = a.indexOf(c);
+        if ( - 1 == d) return "";
+        if (!b) return a.substring(d + c.length);
+        b = a.substring(d + c.length).indexOf(b);
+        return - 1 == b ? "": a.substring(d + c.length, d + c.length + b);
+    },
+    jsCA = [],
+    deleteElement = function (jsCodeArray,NameAndNamespace) {
+        var name = NameAndNamespace.split("&")[0],namespace = NameAndNamespace.split("&")[1];
+        for(var i=0;i<jsCodeArray.length;i++){
+            if(jsCodeArray[i].name == name){
+                if(jsCodeArray[i].namespace == namespace){
+                    jsCodeArray.splice(i, 1);
+                    break;
+                }
+                else continue;
+            }
+            else continue;
+        }
+        return jsCodeArray;
+    },
+    jsAnalysis = function (jsCode){
+        var jsp = {
+			name:'',
+			namespace:'',
+			includes:[],
+			excludes:[],
+			matches:[],
+			requires:[],
+			enabled:!0,
+			jscode:''
+		},jsHead = getStringBetweenTags(jsCode.replace(/(\r\n|\n|\r)/gm, "\n"), "==UserScript==", "==/UserScript=="),jsArr = jsHead.split('\n');
+        jsp.jscode = jsCode ;
+        for(var i=0;i<jsArr.length;i++){
+            if(jsArr[i].indexOf('@name ') != -1){jsp.name=jsArr[i].substring(jsArr[i].indexOf("@name")+5).replace(/\s/gm, "");}//为了和namespace区分，需在搜索时引入一个空格
+            if(jsArr[i].indexOf('@namespace') != -1){jsp.namespace=jsArr[i].substring(jsArr[i].indexOf("@namespace")+10).replace(/\s/gm, "");}
+            if(jsArr[i].indexOf('@include') != -1){jsp.includes.push(jsArr[i].substring(jsArr[i].indexOf("@include")+8).replace(/\s/gm, ""));}
+            if(jsArr[i].indexOf('@exclude') != -1){jsp.excludes.push(jsArr[i].substring(jsArr[i].indexOf("@exclude")+8).replace(/\s/gm, ""));}
+            if(jsArr[i].indexOf('@match') != -1){jsp.includes.push(jsArr[i].substring(jsArr[i].indexOf("@match")+6).replace(/\s/gm, ""));}
+            if(jsArr[i].indexOf('@require') != -1){jsp.requires.push(jsArr[i].substring(jsArr[i].indexOf("@require")+8).replace(/\s/gm, ""));}
+        }
+        return jsp;
+    },
+    addJsToData = function (jsCode,jsCodeArray) {
+        var jsP = jsAnalysis(jsCode),a = 1;
+        for(var i=0;i<jsCodeArray.length;i++){
+            if(jsCodeArray[i].name == jsP.name){
+                if(jsCodeArray[i].namespace == jsP.namespace){
+                    a = 0;
+                }
+                else continue;
+            }
+            else continue;
+        }
+        if(a==1){jsCodeArray.push(jsp);}
+        return jsCodeArray;
+    };
+function import0(){
+    var selectedFile = document.getElementById("files").files[0];//获取读取的File对象
+    var name = selectedFile.name;//读取选中文件的文件名
+    var size = selectedFile.size;//读取选中文件的大小
+    console.log("文件名:"+name+"大小："+size);
+
+    var reader = new FileReader();//这里是核心！！！读取操作就是由它完成的。
+    reader.readAsText(selectedFile);//读取文件的内容
+
+    reader.onload = function(){
+        jsCA = JSON.parse(this.result);
+    };};
+function export0(){//点击导入按钮，使files触发点击事件，然后完成读取文件的操作。
+    var content = JSON.stringify(jsCA);
+    var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "Extension.json");//saveAs(blob,filename)
+    };
+
+
+
+</script>
+</head>
+
+<body>
+<div>
+    <input type="file" id="files" style="display:none" onchange="import0();"/>
+    <input type="button" id="import" value="导入" onclick="$('#files').click();"/>
+    <input type="button" id="export" value="导出" onclick="export0();"/>
+</div>
+</body>
+
+</html>
