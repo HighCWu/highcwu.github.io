@@ -333,7 +333,10 @@
 			editor.setSize('auto', 0.7*winH);
 	}
 	</script>
-	<script>resizeWindow();</script>
+	<script>resizeWindow();
+	var btchecked1 = document.getElementsByName("btSelectItem");for (i in btchecked1){btchecked1[i].className="mui-switch mui-switch-anim";};
+	
+	</script>
 	<script>
 	var btn = document.getElementById('savegit');
 	var clipboard = new Clipboard(btn, {
