@@ -311,7 +311,7 @@
 			for (i in btchecked){btchecked[i].className="mui-switch mui-switch-anim";};
 		}
 	};
-	$table.on('click-row.bs.table',function(row, $element){ if(toOrNot('确认保存现有已命名脚本到数据集中并创建新的脚本(未命名的会废弃)')){addJsToData(editor.getValue());editor.setValue($element.jscode); }
+	$table.on('click-row.bs.table',function(row, $element){ if(toOrNot('确认保存现有已命名脚本到数据集中并创建新的脚本(未命名的会废弃)')){addJsToData(editor.getValue());editor.setValue($element.jscode); $table.bootstrapTable('load',jsCodeArray);}
 	}); 
 	$table.on('check.bs.table',function(row, $element){let i = getElement($element.name + "&" + $element.namespace);jsCodeArray[i].enabled = true;
 	}); 
