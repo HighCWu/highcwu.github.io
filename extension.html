@@ -29,6 +29,7 @@
 	<script src="js/CodeMirror/addon/annotatescrollbar.js"></script>
 	<script src="js/CodeMirror/addon/matchesonscrollbar.js"></script>
 	<script src="js/CodeMirror/addon/jump-to-line.js"></script>
+	<script src="js/clipboard.min.js"></script>
 	<style type="text/css">
 		h1.table {width:50%;height:80%;float:left;display:block;min-height:80px;overflow-y:auto;overflow-x:auto;font-size:14px;},
 		.mui-switch-con {
@@ -45,6 +46,8 @@
 		<div id="toolbar">
 			<button id="add" class="btn btn-link">
 				<i class="glyphicon glyphicon-plus"></i>添加新脚本
+			</button><button id="savegit" class="btn default" onclick="setTimeout('jumpToGithub()', 1500); " data-clipboard-action="copy">
+				<i class="glyphicon glyphicon-plus"></i>更新到Github
 			</button>
 		</div>
 		<h1 class="table" id="h1"><table id="table"
@@ -331,5 +334,20 @@
 	}
 	</script>
 	<script>resizeWindow();</script>
+	<script>
+	var btn = document.getElementById('savegit');
+	var clipboard = new Clipboard(btn, {
+        text: function() {
+		console.log(JSON.stringify(jsCodeArray));
+            return JSON.stringify(jsCodeArray);
+        }
+    });function jumpToGithub(){window.open('https://github.com/wuhecong/wuhecong.github.io/edit/master/data/Extension.json')};
+	clipboard.on('success', function(e) {
+        console.log(e);
+    });
+
+    clipboard.on('error', function(e) {
+        console.log(e);
+    });</script>
 		</body>
 </html>
