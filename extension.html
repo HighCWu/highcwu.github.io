@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>扩展管理器</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-table.css">
+    <link href="css/mui-switch.css" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script>			
+	jsCodeArray=[];
+	$.getJSON("/data/Extension.json",function(result){
+      jsCodeArray = result;
+    });
+	</script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-table.js"></script>
+	<script src="js/StrProcess.js"></script>
+	<script src="js/CodeMirror/codemirror.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="css/codemirror.css">
+	<script src="js/CodeMirror/javascript.js"></script>
+	<script src="js/CodeMirror/active-line.js"></script>
+	<script src="js/CodeMirror/matchbrackets.js"></script>
+	<link rel="stylesheet" href="js/CodeMirror/addon/dialog.css">
+	<link rel="stylesheet" href="js/CodeMirror/addon/matchesonscrollbar.css">
+	<script src="js/CodeMirror/addon/dialog.js"></script>
+	<script src="js/CodeMirror/addon/searchcursor.js"></script>
+	<script src="js/CodeMirror/addon/search.js"></script>
+	<script src="js/CodeMirror/addon/annotatescrollbar.js"></script>
+	<script src="js/CodeMirror/addon/matchesonscrollbar.js"></script>
+	<script src="js/CodeMirror/addon/jump-to-line.js"></script>
+	<style type="text/css">
+		h1.table {width:50%;height:80%;float:left;display:block;min-height:80px;overflow-y:auto;overflow-x:auto;font-size:14px;},
+		.mui-switch-con {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+	</style>
+<script src="js/bootstrap-table-zh-CN.js" type="text/javascript"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>扩展管理器</h1>
+        <p></p>
+		<div id="toolbar">
+			<button id="add" class="btn btn-link">
+				<i class="glyphicon glyphicon-plus"></i>添加新脚本
+			</button>
+		</div>
+		<h1 class="table" id="h1"><table id="table"
+			data-toolbar="#toolbar"
+			data-search="true"
+			data-show-refresh="true"
+			data-show-toggle="true"
+			data-show-columns="true"
+			data-show-export="true"
+			data-detail-view="true"
+			data-checkbox-header="false"
+			data-detail-formatter="detailFormatter"
+			data-minimum-count-columns="2"
+			data-id-field="name"
+			data-side-pagination="client"
+			data-response-handler="responseHandler">
+        </table></h1>
+		<h1 id="txt1" class="table"><textarea id="t1" style="width:100%;resize: none;">
+// ==UserScript==
+// @name         Dictation On
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  try to take over the world!
+// @author       You
+// @match        https://www.hao123.com/?tn=39005028_243_hao_pg
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // Your code here...
+})();
+		</textarea></h1>
+<script>
+    var $remove = $('#remove'),
+		selections = [];
+	$table = $('#table'),jsNewCode = document.getElementById('t1').value.replace("Dictation On","New Script");
+        
+	toOrNot = function(str){
+				{
+				if(confirm(str))
+					{
+						return true;
+					}
+				else
+					{
+						return false;
+					}
+				}
+			};
+
+    function initTable() {
+        $table.bootstrapTable({
+            height: getHeight(),
+            columns: 
+                [
+                    {
+                        field: 'enabled',
+						title: '开关',
+                        checkbox: true,
+                        rowspan: 1,
+                        align: 'center',
+                        valign: 'middle',
+                    }, {
+                        title: '名称',
+                        field: 'name',
+                        rowspan: 1,
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true,
+                    }, 
+					{
+                        field: 'namespace',
+                        title: '命名空间',
+                        sortable: true,
+                        align: 'center'
+                    }, {
+                        field: 'operate',
+                        title: '操作',
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: operateFormatter
+                    }
+				],
+			data: jsCodeArray
+        });
+        // sometimes footer render error.
+		setTimeout(function () {
+            $table.bootstrapTable('resetView');
+        }, 200);
+        $table.on('check.bs.table uncheck.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table', function () {
+            $remove.prop('disabled', !$table.bootstrapTable('getSelections').length);
+
+            // save your data, here just save the current page
+			selections = getIdSelections();
+            // push or splice the selections if you want to save all data selections
+        });
+        $table.on('expand-row.bs.table', function (e, index, row, $detail) {
+            if (index % 2 == 1) {
+                $detail.html('Loading from ajax request...');
+                $.get('LICENSE', function (res) {
+                    $detail.html(res.replace(/\n/g, '<br>'));
+                });
+            }
+        });
+        $table.on('all.bs.table', function (e, name, args) {
+            console.log(name, args);
+        });
+        $(window).resize(function () {
+            $table.bootstrapTable('resetView', {
+                height: getHeight()
+            });
+        });
+    }
+
+    function getIdSelections() {
+        return $.map($table.bootstrapTable('getSelections'), function (row) {
+            return row.id
+        });
+    }
+
+    function responseHandler(res) {
+        $.each(res.rows, function (i, row) {
+            row.state = $.inArray(row.id, selections) !== -1;
+        });
+        return res;
+    }
+
+    function detailFormatter(index, row) {
+        var html = [];
+        $.each(row, function (key, value) {
+            html.push('<p><b>' + key + ':</b> ' + value + '</p>');
+        });
+        return html.join('');
+    }
+
+    function operateFormatter(value, row, index) {
+		return [
+            '<a class="remove" href="javascript:void(0)" title="Remove">',
+            '<i class="glyphicon glyphicon-remove"></i>',
+            '</a>'
+        ].join('');
+    }
+
+    window.operateEvents = {
+        'click .remove': function (e, value, row, index) {
+            $table.bootstrapTable('remove', {
+                field: 'name',
+                values: [row.name]
+            });
+			deleteElement(row.name + "&" +row.namespace);
+        }
+    };
+
+    function totalTextFormatter(data) {
+        return 'Total';
+    }
+
+    function totalNameFormatter(data) {
+        return data.length;
+    }
+
+    function totalPriceFormatter(data) {
+        var total = 0;
+        $.each(data, function (i, row) {
+            total += +(row.price.substring(1));
+        });
+        return '$' + total;
+    }
+
+    function getHeight() {
+        return $(window).height() - $('h1').outerHeight(true);
+    }
+
+    $(function () {
+        var scripts = [
+                location.search.substring(1) || 'js/bootstrap-table.js',
+                'js/bootstrap-table-export.js',
+                'js/tableExport.js',
+                'js/bootstrap-table-editable.js',
+                'js/bootstrap-editable.js'
+            ],
+            eachSeries = function (arr, iterator, callback) {
+                callback = callback || function () {};
+                if (!arr.length) {
+                    return callback();
+                }
+                var completed = 0;
+                var iterate = function () {
+                    iterator(arr[completed], function (err) {
+                        if (err) {
+                            callback(err);
+                            callback = function () {};
+                        }
+                        else {
+                            completed += 1;
+                            if (completed >= arr.length) {
+                                callback(null);
+                            }
+                            else {
+                                iterate();
+                            }
+                        }
+                    });
+                };
+                iterate();
+            };
+
+        eachSeries(scripts, getScript, initTable);
+    });
+
+    function getScript(url, callback) {
+        var head = document.getElementsByTagName('head')[0];
+        var script = document.createElement('script');
+        script.src = url;
+
+        var done = false;
+        // Attach handlers for all browsers
+        script.onload = script.onreadystatechange = function() {
+            if (!done && (!this.readyState ||
+                    this.readyState == 'loaded' || this.readyState == 'complete')) {
+                done = true;
+                if (callback)
+                    callback();
+
+                // Handle memory leak in IE
+                script.onload = script.onreadystatechange = null;
+            }
+        };
+
+        head.appendChild(script);
+
+        // We handle everything using the script element injection
+        return undefined;
+    }
+</script>
+<script type="text/javascript">
+  var textarea = document.getElementById('t1');
+  var winH = $(window).height();
+  editor = CodeMirror.fromTextArea(textarea, {
+    height: 0.7*winH+'px',
+    lineNumbers: true,
+    styleActiveLine: true,
+    matchBrackets: true,
+	extraKeys: {"Alt-F": "findPersistent"}
+  });
+  editor.setValue(jsNewCode);
+</script>
+    <script src="js/CodeMirror/mirrorframe.js" type="text/javascript"></script>
+<script>
+  MirrorFrame(document.getElementById('txt1'));
+	document.getElementById('add').onclick = function(){
+		if(toOrNot('确认保存现有已命名脚本到数据集中并创建新的脚本(未命名的会废弃)'))
+		{
+			addJsToData(editor.getValue());
+			editor.setValue(jsNewCode);
+			$table.bootstrapTable('load',jsCodeArray);
+			var btchecked = document.getElementsByName("btSelectItem");
+			for (i in btchecked){btchecked[i].className="mui-switch mui-switch-anim";};
+		}
+	};
+	$table.on('click-row.bs.table',function(row, $element){ if(toOrNot('确认保存现有已命名脚本到数据集中并创建新的脚本(未命名的会废弃)')){editor.setValue($element.jscode); }
+	}); 
+	$table.on('check.bs.table',function(row, $element){let i = getElement($element.name + "&" + $element.namespace);jsCodeArray[i].enabled = true;
+	}); 
+	$table.on('uncheck.bs.table',function(row, $element){let i = getElement($element.name + "&" + $element.namespace);jsCodeArray[i].enabled = false;
+	}); 
+</script>
+<script>
+		window.onload=function(){
+			resizeWindow();
+		};
+		window.onresize=function(){
+			resizeWindow();
+		};
+ 
+		function resizeWindow(){
+			var winH = $(window).height();
+			$("#h1").css('height',0.75*winH+'px');
+			$("#t1").css('height',0.75*winH+'px');
+			editor.setSize('auto', 0.7*winH);
+	}
+	</script>
+	<script>resizeWindow();</script>
+		</body>
+</html>
