@@ -1,4 +1,4 @@
-importScripts('ffmpeg-all-codecs.js');
+importScripts('https://wuhecong.github.io/js/ffmpeg-all-codecs.js');
 
 var now = Date.now;
 
