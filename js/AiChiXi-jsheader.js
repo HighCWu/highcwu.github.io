@@ -1,8 +1,8 @@
 
 var navdeal = function() {
-    var $item = $('.nav-wrap .nav li p.nav-slide');
-    var $item_username = $('.nav-wrap .nav li p.username');
-    var $item_active = $('.nav-wrap .nav li p.active');
+    var $item = $('.nav-wrap .nav li a.nav-slide');
+    var $item_username = $('.nav-wrap .nav li a.username');
+    var $item_active = $('.nav-wrap .nav li a.active');
     var $nav_line = $('.nav-wrap .line');
     if (window.innerWidth < window.innerHeight) {
         fontsize = window.innerWidth / (12 + 12 * 1.2);
@@ -31,7 +31,7 @@ var navdeal = function() {
     $item_username.css('-moz-opacity', '1');
     $item_username.css('-khtml-opacity', '1');
     $item_username.css('opacity', '1');
-    $('.nav-wrap .nav li p.nav-slide').bind({
+    $('.nav-wrap .nav li a.nav-slide').bind({
         click: function() {
             var item_width = $(this).outerWidth() - 2 * fontsize;
             var item_position_left = $(this).position().left + fontsize;
@@ -39,12 +39,12 @@ var navdeal = function() {
                 'width': item_width,
                 'margin-left': item_position_left
             },
-            0);
-            $('.nav-wrap .nav li p.nav-slide').css('filter', 'alpha(opacity=50)');
-            $('.nav-wrap .nav li p.nav-slide').css('-moz-opacity', '0.5');
-            $('.nav-wrap .nav li p.nav-slide').css('-khtml-opacity', '0.5');
-            $('.nav-wrap .nav li p.nav-slide').css('opacity', '0.5');
-            $('.nav-wrap .nav li p.nav-slide').removeClass('active');
+            800);
+            $('.nav-wrap .nav li a.nav-slide').css('filter', 'alpha(opacity=50)');
+            $('.nav-wrap .nav li a.nav-slide').css('-moz-opacity', '0.5');
+            $('.nav-wrap .nav li a.nav-slide').css('-khtml-opacity', '0.5');
+            $('.nav-wrap .nav li a.nav-slide').css('opacity', '0.5');
+            $('.nav-wrap .nav li a.nav-slide').removeClass('active');
             $(this).addClass('active');
             var self = this;
             setTimeout(function() {
@@ -77,9 +77,9 @@ var topNavigation=function(){
 	})
 };
 window.onresize = function() {
-    var $item = $('.nav-wrap .nav li p.nav-slide');
-    var $item_username = $('.nav-wrap .nav li p.username');
-    var $item_active = $('.nav-wrap .nav li p.active');
+    var $item = $('.nav-wrap .nav li a.nav-slide');
+    var $item_username = $('.nav-wrap .nav li a.username');
+    var $item_active = $('.nav-wrap .nav li a.active');
     var $nav_line = $('.nav-wrap .line');
     if (window.innerWidth < window.innerHeight) {
         fontsize = window.innerWidth / (12 + 12 * 1.2);
@@ -104,15 +104,15 @@ window.onresize = function() {
 
 document.writeln("    <div class=\'navbar-fixed-up nav-wrap\' style=\'z-index:1\'>");
 document.writeln("        <ul class=\'nav navbar-head\' id=\'navbar-head\'>");
-document.writeln("			<li><p class=\'username\'>你还没有登录哟</p></li>");
+document.writeln("			<li><a class=\'username\'>你还没有登录哟</a></li>");
 document.writeln("		</ul>");
 document.writeln("		<ul class=\'nav\'>");
-document.writeln("            <li><p class=\'nav-slide\'>直播</p></li>");
-document.writeln("            <li><p class=\'nav-slide active\'>推荐</p></li>");
-document.writeln("            <li><p class=\'nav-slide\'>追番</p></li>");
-document.writeln("            <li><p class=\'nav-slide\'>分区</p></li>");
-document.writeln("			<li><p class=\'nav-slide\'>关注</p></li>");
-document.writeln("			<li><p class=\'nav-slide\'>发现</p></li>");
+document.writeln("            <li><a class=\'nav-slide\'>直播</a></li>");
+document.writeln("            <li><a class=\'nav-slide active\'>推荐</a></li>");
+document.writeln("            <li><a class=\'nav-slide\'>追番</a></li>");
+document.writeln("            <li><a class=\'nav-slide\'>分区</a></li>");
+document.writeln("			<li><a class=\'nav-slide\'>关注</a></li>");
+document.writeln("			<li><a class=\'nav-slide\'>发现</a></li>");
 document.writeln("			");
 document.writeln("		</ul>");
 document.writeln("        <span class=\'line\' style=\'z-index:1\'></span>");
