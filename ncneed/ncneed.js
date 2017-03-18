@@ -189,7 +189,7 @@ $.ajax({
 	success:function(ret)
 	{
 	   
-	if(confirm("是否要播放听力的视频，若播放，因为本人精力有限，未做播放的优化，可能会卡顿甚至导致网页崩溃")) {  
+	if(confirm("是否要播放听力的视频，若播放，因为本人精力有限，未做播放的优化，可能会卡顿甚至导致网页崩溃\n另外提示一下，翻到下一页就不要再返回来了，可能会崩溃😭")) {  
 	   retrieveSampleVideo(ret.split("CreateVideoPlayer('")[1].split(",")[1].split("'")[1].split("'")[0],ret.split("CreateVideoPlayer('")[2].split(",")[1].split("'")[1].split("'")[0]);
 	}
 	   }
@@ -268,23 +268,26 @@ function CreateVideoPlayer(playerID, src)
 	    var videofile = resPath+"/ItemRes/video/,DanaInfo=10.3.17.250+"+src;
 		console.log(videofile);
 		document.getElementById(playerID).appendChild(Flvplayer[videoNum-1]);
+		sup1.load(
+			function(){setInterval(function(){sup1.move_to(Math.round(Onfile[1].currentTime+1));}
+			,1000)}
+		);
+		sup2.load(
+			function(){setInterval(function(){sup2.move_to(Math.round(Onfile[3].currentTime+1));}
+			,1000)}
+		);
     }   
+var sup1,sup2;
 Inter = setInterval(function(){
 	if(Onfile[0]!=undefined && Onfile[1]!=undefined && Onfile[2]!=undefined && Onfile[3]!=undefined){
 		Flvplayer[0].appendChild(Onfile[0]);
 		Flvplayer[0].appendChild(Onfile[1]);
 		Flvplayer[1].appendChild(Onfile[2]);
 		Flvplayer[1].appendChild(Onfile[3]);
-		var sup1 = new SuperGif({ gif: Onfile[0] } );console.log(sup1);
-		sup1.load(
-			function(){setInterval(function(){sup1.move_to(Math.round(Onfile[1].currentTime+1));}
-			,1000)}
-		);
-		var sup2 = new SuperGif({ gif: Onfile[2] } );console.log(sup2);
-		sup2.load(
-			function(){setInterval(function(){sup2.move_to(Math.round(Onfile[3].currentTime+1));}
-			,1000)}
-		);
+		sup1 = new SuperGif({ gif: Onfile[0] } );console.log(sup1);
+		
+		sup2 = new SuperGif({ gif: Onfile[2] } );console.log(sup2);
+		
 		clearInterval(Inter);
 }}
 	);
