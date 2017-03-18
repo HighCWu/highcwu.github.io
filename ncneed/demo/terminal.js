@@ -154,7 +154,7 @@ function initWorker() {
       outputElement.textContent = "Worker has received command\n";
     } else if (message.type == "done") {
       stopRunning();
-	  if(window.parent.location.href != window.location.href){
+	  if(window.top != window.self){
 		  window.parent.postMessage(message,'*');
 		  if(num == 0){
 			  runParentCommand(msg.text[1],msg.files);
@@ -177,8 +177,8 @@ function initWorker() {
 document.addEventListener("DOMContentLoaded", function() {
 
   initWorker();
-  console.log(window.parent.location.href);
-  if(window.parent.location.href != window.location.href){
+  //console.log(window.parent.location.href);
+  if(window.top != window.self){
 	//window.addEventListener("message", onmessage, false);
 	console.log(window.location.href);
   }
