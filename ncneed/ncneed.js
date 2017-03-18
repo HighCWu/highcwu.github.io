@@ -8,8 +8,8 @@ var Flvplayer = new Array();
 var VideoData = new Array();
 Flvplayer.push(document.createElement('a'));
 Flvplayer.push(document.createElement('a'));
-Flvplayer[0].innerHTML="正在加载中......";
-Flvplayer[1].innerHTML="正在加载中......";
+Flvplayer[0].innerHTML="正在加载中......网络不好一般加载不出来";
+Flvplayer[1].innerHTML="正在加载中......网络不好一般加载不出来";
 function retrieveSampleVideo(flvst,flvnd){
 	function getDownloadLink(fileData, fileName) {
 	  if (fileName.match(/\.gif/)) {
@@ -46,10 +46,10 @@ function retrieveSampleVideo(flvst,flvnd){
 		  oReq.onload = function (oEvent) {
 			var arrayBuffer = oReq.response;
 			if (arrayBuffer) {
-				
 			  VideoData[0]={
 			  'name':flvst,
-			  'data':new Uint8Array(arrayBuffer)}
+			  'data':new Uint8Array(arrayBuffer)};
+			  console.log('ok1');
 			};
 		  };
 
@@ -62,7 +62,8 @@ function retrieveSampleVideo(flvst,flvnd){
 			if (arrayBuffer) {
 			  VideoData[1]={
 			  'name':flvnd,
-			  'data':new Uint8Array(arrayBuffer)}
+			  'data':new Uint8Array(arrayBuffer)};
+			  console.log('ok2');
 			};
 		  };
 
@@ -80,7 +81,7 @@ function retrieveSampleVideo(flvst,flvnd){
 		var InT = setInterval(function(){if(VideoData[1]['data']!=0 && VideoData[0]['data']!=0){
 		clearInterval(InT);
 		console.log('ready');
-		ifr.postMessage({
+		window.frames[0].postMessage({
 			Ready:true,
 			text:["-i "+flvst +" -vf fps=fps=1,showinfo -strict -2 output/ouput1.gif -i "+flvst+" -vf showinfo -strict -2 output/output1.wav","-i "+flvnd+" -vf fps=fps=1,showinfo -strict -2 output/output1.gif -i "+flvnd+" -vf fps=fps=1,showinfo -strict -2 output/output1.wav"],
 			files:VideoData
@@ -88,6 +89,97 @@ function retrieveSampleVideo(flvst,flvnd){
 		)
 		}},1000);
 }
+$.ajax({
+	url:"ViewTestTask.aspx",
+	data: {action: 'getPart', partnum:1, ttid: window.location.href.split("ttid=")[1].split("&")[0], sheetid: document.getElementsByTagName('html')[0].innerHTML.split("sheetid: ")[1].split(",")[0], sttid:1, nocache: Math.random()},
+	type:"POST",
+	async:false,
+	success:function(ret)
+	{
+	    $('.test_frame').html(ret);
+		$('.test_frame').find('.incorrect_img').remove();
+		 curPartNum = 1;
+		 $('.answer_1').append('点击偷看答案');
+		 $('.answer_1').each(function(){
+		 this.onclick = function(){console.log('onclick');$(this).find('li').css('display','block');var self = this;setTimeout(function(){$(self).find('li').css('display','none')},3000)};
+		 
+		 });
+		 $('.answer_1 li').css('display','none');
+		 $('input:text').each(function(){
+		 if ($(this).attr("onchange") != undefined)
+		 resize_txt(document.getElementById($(this).attr("id")));
+		 }); 
+		 
+		 //阅读题型小题区高度设置
+		 $('.test_list_5_2').each(function(){
+		 $(this).height($(this).siblings('.test_list_5').eq(0).height());
+		 }); 
+		 
+		 var testframeHeight = $('.test_frame').eq(0).height();
+		 var answersheetHeight = $('.answer_sheet').eq(0).height();
+		 parent.document.getElementById("mainFrame").height=Math.max(testframeHeight, answersheetHeight)+90;
+		 
+		 parent.TINY.box.hide();
+	   }
+});
+ function ShowPart(num)
+ {
+ //相关按钮 
+ if (num >= $(window.parent.document).find('#ulParts a').length)
+ {
+ $('#btnNextPart').hide(); 
+ $('#btnBottomSubmit').show(); 
+ }
+ else 
+ {
+ $('#btnNextPart').show(); 
+ $('#btnBottomSubmit').hide(); 
+ }
+ if (num == 1) 
+ $('#btnPrevPart').hide();
+ else
+ $('#btnPrevPart').show();
+ 
+ //选中标签样式修改
+ $(window.parent.document).find('.test_part_current').removeClass("test_part_current");
+ $(window.parent.document).find('#aPart'+num).addClass("test_part_current");
+ 
+ //获取part内容，对应的html 加载入test_frame
+$.ajax({
+	url:"ViewTestTask.aspx",
+	data: {action: 'getPart', partnum:num, ttid: window.location.href.split("ttid=")[1].split("&")[0], sheetid: document.getElementsByTagName('html')[0].innerHTML.split("sheetid: ")[1].split(",")[0], sttid:1, nocache: Math.random()},
+	type:"POST",
+	async:false,
+	success:function(ret)
+	{
+	    $('.test_frame').html(ret);
+		$('.test_frame').find('.incorrect_img').remove();
+		 curPartNum = 1;
+		 $('.answer_1').append('点击偷看答案');
+		 $('.answer_1').each(function(){
+		 this.onclick = function(){console.log('onclick');$(this).find('li').css('display','block');var self = this;setTimeout(function(){$(self).find('li').css('display','none')},3000)};
+		 
+		 });
+		 $('.answer_1 li').css('display','none');
+		 $('input:text').each(function(){
+		 if ($(this).attr("onchange") != undefined)
+		 resize_txt(document.getElementById($(this).attr("id")));
+		 }); 
+		 
+		 //阅读题型小题区高度设置
+		 $('.test_list_5_2').each(function(){
+		 $(this).height($(this).siblings('.test_list_5').eq(0).height());
+		 }); 
+		 
+		 var testframeHeight = $('.test_frame').eq(0).height();
+		 var answersheetHeight = $('.answer_sheet').eq(0).height();
+		 parent.document.getElementById("mainFrame").height=Math.max(testframeHeight, answersheetHeight)+90;
+		 
+		 parent.TINY.box.hide();
+	   }
+});
+ }
+
 
 $.ajax({
 	url:"ViewTestTask.aspx",
@@ -96,16 +188,48 @@ $.ajax({
 	async:false,
 	success:function(ret)
 	{
+	   
+	if(confirm("是否要播放听力的视频，若播放，因为本人精力有限，未做播放的优化，可能会卡顿甚至导致网页崩溃")) {  
 	   retrieveSampleVideo(ret.split("CreateVideoPlayer('")[1].split(",")[1].split("'")[1].split("'")[0],ret.split("CreateVideoPlayer('")[2].split(",")[1].split("'")[1].split("'")[0]);
+	}
 	   }
 });
+function ShowPart(num)
+    {
+        //选中标签样式修改
+        $(window.parent.document).find('.test_part_current').removeClass("test_part_current");
+        $(window.parent.document).find('#aPart'+num).addClass("test_part_current");
+        
+        //获取part内容，对应的html 加载入test_frame//显示题目，真
+        $.ajax({
+            url:"ViewTestTask.aspx",
+            data: {action: 'getPart', partnum:num, ttid: window.location.href.split("ttid=")[1].split("&")[0], sheetid: document.getElementsByTagName('html')[0].innerHTML.split("sheetid: ")[1].split(",")[0], sttid:1,  nocache: Math.random()},
+            type:"POST",
+            async:false,
+            success:function(ret)
+            {
+                $('.test_frame').html(ret);
+                curPartNum = num;
+                
+                //阅读题型小题区高度设置
+                $('.test_list_5_2').each(function(){
+                   $(this).height($(this).siblings('.test_list_5').eq(0).height());
+                });                
+                
+                var testframeHeight = $('.test_frame').eq(0).height();
+                var answersheetHeight = $('.answer_sheet').eq(0).height();
+                parent.document.getElementById("mainFrame").height=Math.max(testframeHeight, answersheetHeight)+90;
+            }
+        });
+    }
 
 document.oncontextmenu=new Function(DanaJs("event.returnValue=true;"));
 document.onselectstart=new Function(DanaJs("event.returnValue=true;"));//禁用鼠标右键被改为允许了
-var audio = document.createElement("audio");
-document.getElementsByTagName('body')[0].appendChild(audio);
 function PlaySound(src)
     {
+		var audio = document.createElement("audio");
+		audio.setAttribute("controls","controls");
+		
 		if (soundfile == "")
 		{
 			audio.src = "https://vpn.ujs.edu.cn/NPLearningTest//ItemRes/sound/,DanaInfo=10.3.17.250+"+src;
@@ -115,10 +239,15 @@ function PlaySound(src)
 			audio.src = "https://vpn.ujs.edu.cn/NPLearningTest//ItemRes/sound/,DanaInfo=10.3.17.250+"+src;
 		}
 		console.log('Playing...');
+		$(document.activeElement).after(audio);
+		$(document.activeElement).css('display','none');
 		audio.play();
 	}
 function PlayRecordSound(src)
     {
+		var audio = document.createElement("audio");
+		audio.setAttribute("controls","controls");
+		
 		if (soundfile == "")
 		{
 			audio.src = "../apps/Recording/streams/,DanaInfo=10.3.17.250+"+src;
@@ -127,6 +256,8 @@ function PlayRecordSound(src)
 		{
 			audio.src = "../apps/Recording/streams/,DanaInfo=10.3.17.250+"+src;
 		}
+		$(document.activeElement).after(audio);
+		$(document.activeElement).css('display','none');
 		audio.play();
     }
 var resPath = "https://vpn.ujs.edu.cn/NPLearningTest/";
@@ -146,14 +277,14 @@ Inter = setInterval(function(){
 		Flvplayer[1].appendChild(Onfile[3]);
 		var sup1 = new SuperGif({ gif: Onfile[0] } );console.log(sup1);
 		sup1.load(
-			function(){setInterval(sup1.move_to(Math.round(Onfile[1].currentTime));
+			function(){setInterval(function(){sup1.move_to(Math.round(Onfile[1].currentTime+1));}
 			,1000)}
 		);
-		var sup2 = new SuperGif({ gif: Onfile[3] } );console.log(sup1);
+		var sup2 = new SuperGif({ gif: Onfile[2] } );console.log(sup2);
 		sup2.load(
-			function(){setInterval(sup2.move_to(Math.round(Onfile[3].currentTime));
+			function(){setInterval(function(){sup2.move_to(Math.round(Onfile[3].currentTime+1));}
 			,1000)}
 		);
 		clearInterval(Inter);
 }}
-	)
+	);
