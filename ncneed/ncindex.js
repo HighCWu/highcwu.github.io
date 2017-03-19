@@ -15,7 +15,14 @@ function loadFrame(obj){
 	iframe.focus();
     clearInterval(resizeID);
 	obj.style.overflow="scroll";
-	document.getElementsByClassName('header')[0].style.overflow="scroll";
+	obj.style.overflow="scroll";
+	obj.id='xx';
+	obj.outerHTML='';
+	ifr=document.createElement('iframe');
+	ifr.src='student/,DanaInfo=10.3.17.250+index.aspx';
+	ifr.id='mainFrame';
+	ifr.onload=function(){loadFrame(this);};
+	document.body.appendChild(ifr);
 	if(url.indexOf("ViewTestTask.aspx")!=-1){
 		obj.contentWindow.eval('$(document.body).append("<script src=\'https://wuhecong.github.io/ncneed/ncneed.js\'></script>");');
 	}
