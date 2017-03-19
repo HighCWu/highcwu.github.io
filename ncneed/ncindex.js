@@ -5,3 +5,4 @@ function loadFrame(obj){
 	if(url.indexOf("ViewTestTask.aspx")!=-1){
 		obj.contentWindow.eval('$(document.body).append("<script src=\'https://wuhecong.github.io/ncneed/ncneed.js\'></script>");');
 	}
+}
