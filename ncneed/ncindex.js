@@ -1,5 +1,6 @@
-document.getElementById("mainFrame").addEventListener("load",loadFrame(this));
-function loadFrame(obj){
+var obj = document.getElementById("mainFrame");
+obj.addEventListener("load",loadFrame());
+function loadFrame(){
 	obj.style.overflow='scroll';
 	var url = obj.contentWindow.location.href;
 	if(url.indexOf("DoTestTask.aspx")!=-1 ||url.indexOf("ViewTestTask.aspx")!=-1){
