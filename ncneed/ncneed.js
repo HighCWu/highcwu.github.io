@@ -192,6 +192,19 @@ $.ajax({
 	if(confirm("是否要播放听力的视频，若播放，因为本人精力有限，未做播放的优化，可能会卡顿甚至导致网页崩溃\n另外提示一下，翻到下一页就不要再返回来了，可能会崩溃😭")) {  
 	   retrieveSampleVideo(ret.split("CreateVideoPlayer('")[1].split(",")[1].split("'")[1].split("'")[0],ret.split("CreateVideoPlayer('")[2].split(",")[1].split("'")[1].split("'")[0]);
 	}
+	else{
+		CreateVideoPlayer = function (playerID, src)
+    {
+	    var videofile = resPath+"/ItemRes/video/,DanaInfo=10.3.17.250+"+src;
+		jwplayer(playerID).setup({
+			flashplayer:"../script/jwplayer.flash.swf?c="+Math.random(),
+			file:videofile,
+			height:180,
+			width:280,
+			primary:"flash"
+		});
+    }   
+	}
 	   }
 });
 function ShowPart(num)
@@ -209,16 +222,29 @@ function ShowPart(num)
             success:function(ret)
             {
                 $('.test_frame').html(ret);
+				$('.test_frame').find('.incorrect_img').remove();
                 curPartNum = num;
-                
-                //阅读题型小题区高度设置
-                $('.test_list_5_2').each(function(){
-                   $(this).height($(this).siblings('.test_list_5').eq(0).height());
-                });                
-                
-                var testframeHeight = $('.test_frame').eq(0).height();
-                var answersheetHeight = $('.answer_sheet').eq(0).height();
-                parent.document.getElementById("mainFrame").height=Math.max(testframeHeight, answersheetHeight)+90;
+                $('.answer_1').append('点击偷看答案');
+		 $('.answer_1').each(function(){
+		 this.onclick = function(){console.log('onclick');$(this).find('li').css('display','block');var self = this;setTimeout(function(){$(self).find('li').css('display','none')},3000)};
+		 
+		 });
+		 $('.answer_1 li').css('display','none');
+		 $('input:text').each(function(){
+		 if ($(this).attr("onchange") != undefined)
+		 resize_txt(document.getElementById($(this).attr("id")));
+		 }); 
+		 
+		 //阅读题型小题区高度设置
+		 $('.test_list_5_2').each(function(){
+		 $(this).height($(this).siblings('.test_list_5').eq(0).height());
+		 }); 
+		 
+		 var testframeHeight = $('.test_frame').eq(0).height();
+		 var answersheetHeight = $('.answer_sheet').eq(0).height();
+		 parent.document.getElementById("mainFrame").height=Math.max(testframeHeight, answersheetHeight)+90;
+		 
+		 parent.TINY.box.hide();
             }
         });
     }
