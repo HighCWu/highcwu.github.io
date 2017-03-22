@@ -277,6 +277,15 @@ function CreateVideoPlayer(playerID, src)
 			,1000)}
 		);
     }   
+ function SubmitTest()
+ {
+ if (!confirm('确认交卷吗？'))
+ return;
+ seconds = 500+300*(0.5-Math.random());
+ SaveCurrentPart(true);
+ //返回
+ // Return('Student/');
+ }
 var sup1,sup2;
 Inter = setInterval(function(){
 	if(Onfile[0]!=undefined && Onfile[1]!=undefined && Onfile[2]!=undefined && Onfile[3]!=undefined){
