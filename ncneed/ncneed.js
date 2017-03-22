@@ -223,26 +223,26 @@ function ShowPart(num)
 				$('.test_frame').find('.incorrect_img').remove();
                 curPartNum = num;
                 $('.answer_1').append('点击偷看答案');
-		 $('.answer_1').each(function(){
-		 this.onclick = function(){console.log('onclick');$(this).find('li').css('display','block');var self = this;setTimeout(function(){$(self).find('li').css('display','none')},3000)};
-		 
-		 });
-		 $('.answer_1 li').css('display','none');
-		 $('input:text').each(function(){
-		 if ($(this).attr("onchange") != undefined)
-		 resize_txt(document.getElementById($(this).attr("id")));
-		 }); 
-		 
-		 //阅读题型小题区高度设置
-		 $('.test_list_5_2').each(function(){
-		 $(this).height($(this).siblings('.test_list_5').eq(0).height());
-		 }); 
-		 
-		 var testframeHeight = $('.test_frame').eq(0).height();
-		 var answersheetHeight = $('.answer_sheet').eq(0).height();
-		 parent.document.getElementById("mainFrame").height=Math.max(testframeHeight, answersheetHeight)+90;
-		 
-		 parent.TINY.box.hide();
+				 $('.answer_1').each(function(){
+				 this.onclick = function(){console.log('onclick');$(this).find('li').css('display','block');var self = this;setTimeout(function(){$(self).find('li').css('display','none')},3000)};
+				 
+				 });
+				 $('.answer_1 li').css('display','none');
+				 $('input:text').each(function(){
+				 if ($(this).attr("onchange") != undefined)
+				 resize_txt(document.getElementById($(this).attr("id")));
+				 }); 
+				 
+				 //阅读题型小题区高度设置
+				 $('.test_list_5_2').each(function(){
+				 $(this).height($(this).siblings('.test_list_5').eq(0).height());
+				 }); 
+				 
+				 var testframeHeight = $('.test_frame').eq(0).height();
+				 var answersheetHeight = $('.answer_sheet').eq(0).height();
+				 parent.document.getElementById("mainFrame").height=Math.max(testframeHeight, answersheetHeight)+90;
+				 
+				 parent.TINY.box.hide();
             }
         });
     }
@@ -303,10 +303,10 @@ function CreateVideoPlayer(playerID, src)
     }   
  function SubmitTest()
  {
- if (!confirm('确认交卷吗？'))
- return;
- seconds = 500+300*(0.5-Math.random());
- SaveCurrentPart(true);
+ if (!confirm('确认交卷吗？')){
+ return;}
+ else{seconds = 300+Math.round(300*(0.5-Math.random()));
+ SaveCurrentPart(true);}
  //返回
  // Return('Student/');
  }
