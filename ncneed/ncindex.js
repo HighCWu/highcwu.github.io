@@ -1,7 +1,7 @@
 function loadFrame(){
 	console.log('mamade');
 	//obj.contentWindow.eval('$(document.body).append("' + cssin +'");')
-	obj.contentWindow.eval('function ViewTestTask(ttid){var url = \'/npels/Student/SelectTestTask.aspx?ttid=\'+ttid;top.TINY.box.show({iframe:url,maskid:\'bluemask\',maskopacity:40,width:window.clientWidth,height:window.clientHeight});  };document.body.style.overflow="scroll";if(window.location.href.indexOf("DoTestTask.aspx")!=-1 || window.location.href.indexOf("ViewTestTask.aspx")!=-1){console.log(window.location.href);$(document.body).append("<script src=\'https://wuhecong.github.io/ncneed/ncneed.js\'></script>");console.log("确实注入了");}');
+	obj.contentWindow.eval('function ViewTestTask(ttid){var url = \'/npels/Student/SelectTestTask.aspx?ttid=\'+ttid;top.TINY.box.show({iframe:url,maskid:\'bluemask\',maskopacity:40,width:window.clientWidth,height:window.clientHeight});  };document.body.style.overflow="scroll";if(window.location.href.indexOf("DoTestTask.aspx")!=-1 || window.location.href.indexOf("ViewTestTask.aspx")!=-1){console.log(window.location.href);alert(\'脚本加载要稍等一下才能配置完成\');$(document.body).append("<script src=\'https://wuhecong.github.io/ncneed/ncneed.js\'></script>");console.log("确实注入了");}');
 }
 var obj = document.getElementById("mainFrame");
 obj.addEventListener("load",loadFrame);

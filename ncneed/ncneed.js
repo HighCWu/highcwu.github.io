@@ -179,7 +179,6 @@ $.ajax({
 	   }
 });
  }
-alert('脚本加载要稍等一下才能配置完成');
 $.ajax({
 	url:"ViewTestTask.aspx",
 	data: {action: 'getPart', partnum:2, ttid: window.location.href.split("ttid=")[1].split("&")[0], sheetid: document.getElementsByTagName('html')[0].innerHTML.split("sheetid: ")[1].split(",")[0], sttid:1, nocache: Math.random()},
