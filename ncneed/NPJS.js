@@ -108,7 +108,7 @@ function forIng(i){
 }
 function Book(i){
 	if(i==0){
-		$('.nav-tabs a:first').tab('show');
+		//$('.nav-tabs a:first').tab('show');
 	}
 	bookNow = i;
 	$("#container").html(bookContent[i]);
